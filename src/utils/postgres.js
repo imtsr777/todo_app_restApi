@@ -1,35 +1,34 @@
-import pg from 'pg'
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const pool = new pg.Pool({
+const pool = new Pool({
     user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
     password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT
+    host: process.env.PG_HOST,
+    database:process.env.PG_DATABASE,
 })
-// console.log({user: process.env.PG_USER,
-//     host: process.env.PG_HOST,
-//     database: process.env.PG_DATABASE,
-//     password: process.env.PG_PASSWORD,
-//     port: process.env.PG_PORT
-// })
 
-export default (req, res, next) => {
-    req.fetch = async function (query, ...params) {
-		const client = await pool.connect()
-		try {
-            
-			const { rows } = await client.query(query, params.length ? params : null)
-            
-			return rows
-		} 
-		catch(error){
-			return res.status(400).json({message:error})
-		}
-		finally {
-			client.release()
-		}
-	}
+async function fetch(query, ...params) {
+    const client = await pool.connect()
+    try {
+        const { rows: [row] } = await client.query(query, params.length ? params : null)
+        return row
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-	return next()
+async function fetchAll(query, ...params) {
+    const client = await pool.connect()
+    try {
+        const { rows } = await client.query(query, params.length ? params : null)
+        return rows
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export default {
+    fetchAll,
+    fetch
 }

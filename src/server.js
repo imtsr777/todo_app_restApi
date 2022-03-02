@@ -6,9 +6,9 @@ const PORT = process.env.PORT || 4009
 
 const app = express()
 app.use(express.json())
-app.use(postgres)
+
 app.use("/auth",authRoutes.router)
 
 
 
-app.listen(PORT,()=>{console.log("Server is running")})
+app.listen(PORT,()=>{console.log("Server is running",PORT)})
