@@ -33,10 +33,11 @@ const REGISTER = async (req,res)=>{
         }
 
         const[ newUser ] = await rest.fetchAll(
-            ` insert into users (username,password,age)
-                values($1,$2,$3) returning userId
+            ` insert into users (username,password,age,role)
+                values($1,$2,$3,'user') returning userId,role
             `,username,sha256(password),age
         )
+        newUser['user-agent'] = req.headers['user-agent']
     
     return res.json({
         status: 201,
@@ -63,11 +64,12 @@ const LOGIN = async (req,res)=>{
         }
         
         const [logged]  = await rest.fetchAll(
-            ` select userId from users where username=$1 and password=$2
+            ` select userId,role from users where username=$1 and password=$2
             `,username,sha256(password)
         )
 
         if(!logged) throw new Error("Username or Password incorrect")
+        logged['user-agent'] = req.headers['user-agent']
         
         return res.json({
             status: 201,

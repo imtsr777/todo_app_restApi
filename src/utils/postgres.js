@@ -14,7 +14,7 @@ async function fetch(query, ...params) {
         const { rows: [row] } = await client.query(query, params.length ? params : null)
         return row
     } catch (error) {
-        console.log(error)
+        
     }
 }
 
@@ -24,7 +24,7 @@ async function fetchAll(query, ...params) {
         const { rows } = await client.query(query, params.length ? params : null)
         return rows
     } catch (error) {
-        console.log(error)
+        
     }
 }
 
