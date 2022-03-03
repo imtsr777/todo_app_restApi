@@ -46,8 +46,21 @@ const TODO_GET = async(req,res)=>{
     }
 }
 
+const DELETE_TODO = async(req,res)=>{
+    try{
+        const{todoid} = req.body
+        const{userid} = req.userInfo
+        const deleted = await rest.fetchAll(`delete from todos where todoid=$1 and userid=$2`,todoid,userid)
+        res.status(200).json({message:"Delted user"})
+    }
+    catch(error){
+        res.status(400).json({message:error.message})
+    }
+}
+
 export default {
     INSERT_TODO,
     UPDATE_TODO,
-    TODO_GET
+    TODO_GET,
+    DELETE_TODO
 }
